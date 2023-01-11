@@ -5,14 +5,35 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Labb3_Databaser_NET22.Stores;
+using Labb3_Databaser_NET22.ViewModels;
 
-namespace labb_3_databaser_Fjellstrom101
+namespace Labb3_Databaser_NET22
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
-        //Test
+        private readonly NavigationStore _navigationStore;
+        private readonly DataStore _dataStore;
+        public App()
+        {
+            _navigationStore = new NavigationStore();
+            _dataStore = new DataStore();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore);
+
+            MainWindow = new MainWindow()
+            {
+                DataContext = new MainViewModel(_navigationStore)
+            };
+
+            MainWindow.Show();
+        }
     }
 }

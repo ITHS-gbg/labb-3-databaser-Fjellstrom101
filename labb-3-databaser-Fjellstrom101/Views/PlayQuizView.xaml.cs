@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Labb3_Databaser_NET22
+namespace Labb3_Databaser_NET22.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for PlayQuizView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class PlayQuizView : UserControl
     {
-        public MainWindow()
+        public PlayQuizView()
         {
             InitializeComponent();
         }
