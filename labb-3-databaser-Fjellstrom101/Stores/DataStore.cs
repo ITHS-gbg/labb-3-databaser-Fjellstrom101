@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
+using DataAccess;
 using Labb3_Databaser_NET22.DataModels;
 using MongoDB.Driver;
 
@@ -19,49 +20,21 @@ public class DataStore
 {
     private readonly string _appFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "SuperDuperQuizzenNo1");
-    private const string Hostname = "localhost";
-    private const string Port = "27017";
-    private const string DatabaseName = "SuperDuperQuizzenNo1";
 
-    private IMongoClient _client;
-    private IMongoDatabase _database;
+    IRepository<Category> _categoryManager;
+    IRepository<Quiz> _quizManager;
+    IRepository<Question> _questionManager;
 
-    private IMongoCollection<Question> questionCollection;
-    private IMongoCollection<Category> categoryCollection;
-    private IMongoCollection<Quiz> quizCollection;
-
-    public IEnumerable<Category> Categories => categoryCollection.Find(_ => true).ToList();
-    public IEnumerable<Quiz> Quizzes => quizCollection.Find(_ => true).ToList();
-    public IEnumerable<Question> Questions => questionCollection.Find(_ => true).ToList();
+    public IEnumerable<Category> Categories => _categoryManager.GetAll();
+    public IEnumerable<Quiz> Quizzes => _quizManager.GetAll();
+    public IEnumerable<Question> Questions => _questionManager.GetAll();
 
 
     public DataStore()
     {
-        var connectionString = $"mongodb://{Hostname}:{Port}";
-        _client = new MongoClient(connectionString);
-        _database = _client.GetDatabase(DatabaseName);
-
-        questionCollection = _database.GetCollection<Question>(
-            "questions", 
-            new MongoCollectionSettings()
-                {
-                    AssignIdOnInsert = true
-                });
-
-
-        categoryCollection = _database.GetCollection<Category>(
-            "categories",
-            new MongoCollectionSettings()
-            {
-                AssignIdOnInsert = true
-            });
-
-
-        quizCollection = _database.GetCollection<Quiz>("quizzes",
-            new MongoCollectionSettings()
-            {
-                AssignIdOnInsert = true
-            });
+        _categoryManager = new CategoryManager();
+        _quizManager = new QuizManager();
+        _questionManager = new QuestionManager();
 
         Initialize();
     }
@@ -166,9 +139,8 @@ public class DataStore
     }
     private async Task LoadAllQuizzesAsync()
     {
-        var tempList = questionCollection.Find(_ => true).ToList();
 
-        foreach (var question in tempList)
+        foreach (var question in _questionManager.GetAll())
         {
             (Questions as ObservableCollection<Question>)?.Add(question);
         }
@@ -341,9 +313,7 @@ public class DataStore
 
     private async Task ExportToMongoDBAsync()
     {
-        await questionCollection.InsertManyAsync(Questions);
-        await quizCollection.InsertManyAsync(Quizzes);
-        await categoryCollection.InsertManyAsync(Categories);
+
     }
 
     private bool FileIsInsideFolder(DirectoryInfo file, DirectoryInfo folder)
@@ -374,5 +344,10 @@ public class DataStore
         });
 
         return Categories.Select(a => a.Title).Concat(retList).Distinct();
+    }
+
+    public void UpsertCategory(Category category)
+    {
+        _categoryManager.Update(category);
     }
 }

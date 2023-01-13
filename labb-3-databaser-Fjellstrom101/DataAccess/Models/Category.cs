@@ -15,11 +15,19 @@ public class Category
     public IEnumerable<Question> Questions => _questions;
     [BsonElement]
     public string Title { get; set; }
-
+    
     public Category(string title)
     {
         Title = title;
         _questions = new List<Question>();
+    }
+    [BsonConstructor]
+    public Category(ObjectId id, IEnumerable<Question> questions, string title)
+    {
+        Id = id;
+        _questions = questions;
+        Title = title;
+
     }
 
     public void AddQuestion(Question question)

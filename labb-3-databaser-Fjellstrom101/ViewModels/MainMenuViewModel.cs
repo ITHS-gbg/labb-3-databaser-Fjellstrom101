@@ -17,7 +17,11 @@ public class MainMenuViewModel : ObservableObject
     private readonly DataStore _dataStore;
 
     private Quiz _selectedQuiz; 
+    private Question _selectedQuestion; 
+    private Category _selectedCategory;
+
     private int _selectedCategoryIndex = -1;
+    private int _selectedTab = 0;
 
     public Quiz SelectedQuiz
     {
@@ -34,7 +38,22 @@ public class MainMenuViewModel : ObservableObject
             ExportQuizCommand.NotifyCanExecuteChanged();
         }
     }
+    public Category SelectedCategory
+    {
+        get => _selectedCategory;
+        set
+        {
+            SetProperty(ref _selectedCategory, value);
+
+            CreateOrEditQuizButtonText = value == null ? "Skapa Kategori" : "Ändra Kategori";
+
+            OnPropertyChanged(nameof(CreateOrEditCategoryButtonText));
+            RemoveCategoryCommand.NotifyCanExecuteChanged();
+        }
+    }
     public string CreateOrEditQuizButtonText { get; set; } = "Skapa Quiz";
+    public string CreateOrEditQuestionButtonText { get; set; } = "Skapa Fråga";
+    public string CreateOrEditCategoryButtonText { get; set; } = "Skapa Kategori";
     public int CategoryQuestionAmount { get; set; } = 10;
     
     public IEnumerable<Quiz> Quizzes => _dataStore.Quizzes;
@@ -50,27 +69,51 @@ public class MainMenuViewModel : ObservableObject
         }
     }
 
+    public int SelectedTab
+    {
+        get => _selectedTab;
+        set
+        {
+            SetProperty(ref _selectedTab, value);
+        }
+    }
+
 
     public IRelayCommand PlayQuizCommand { get; }
-    public IRelayCommand CreateOrEditCommand { get; }
+    public IRelayCommand CreateOrEditQuizCommand { get; }
     public IRelayCommand RemoveQuizCommand { get; }
-    public IRelayCommand GenerateQuizCommand { get; }
     public IRelayCommand ExportQuizCommand { get; }
     public IRelayCommand ImportQuizCommand { get; }
 
+    public IRelayCommand CreateOrEditQuestionCommand { get; }
+    public IRelayCommand RemoveQuestionCommand { get; }
+    public IRelayCommand GenerateQuizCommand { get; }
 
-    public MainMenuViewModel(DataStore dataStore, NavigationStore navigationStore)
+
+    public IRelayCommand CreateOrEditCategoryCommand { get; }
+    public IRelayCommand RemoveCategoryCommand { get; }
+
+
+    public MainMenuViewModel(DataStore dataStore, NavigationStore navigationStore, int openTabIndex = 0)
     {
         _dataStore = dataStore;
         _navigationStore = navigationStore;
+        SelectedTab = openTabIndex;
 
         PlayQuizCommand = new RelayCommand(PlayQuizCommandExecute, QuizIsSelected);
-        CreateOrEditCommand = new RelayCommand(CreateOrEditCommandExecute);
-        GenerateQuizCommand = new RelayCommand<object>((param) => { GenerateQuizCommandExecute(param); }, GenerateQuizCommandCanExecute);
+        CreateOrEditQuizCommand = new RelayCommand(CreateOrEditQuizCommandExecute);
         RemoveQuizCommand = new RelayCommand(DeleteQuizCommandExecute, QuizIsSelected);
         ExportQuizCommand = new RelayCommand(ExportQuizCommandExecute, QuizIsSelected);
         ImportQuizCommand = new RelayCommand(ImportQuizCommandExecute);
+
+        GenerateQuizCommand = new RelayCommand<object>((param) => { GenerateQuizCommandExecute(param); }, GenerateQuizCommandCanExecute);
+        CreateOrEditCategoryCommand = new RelayCommand(CreateOrEditCategoryCommandExecute);
+        RemoveCategoryCommand = new RelayCommand(DeleteCategoryCommandExecute, CategoryIsSelected);
+
+        CreateOrEditQuestionCommand = new RelayCommand(CreateOrEditQuestionCommandExecute);
+
     }
+
 
 
     public void PlayQuizCommandExecute()
@@ -82,18 +125,8 @@ public class MainMenuViewModel : ObservableObject
         return SelectedQuiz != null;
     }
 
-    public void GenerateQuizCommandExecute(object param)
-    {
-        System.Collections.IList items = (System.Collections.IList)param;
-        Quiz generatedQuiz = _dataStore.GenerateQuizByCategories(items.Cast<Category>().ToArray(),CategoryQuestionAmount);
 
-        _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _dataStore, generatedQuiz);
-    }
-    public bool GenerateQuizCommandCanExecute(object param)
-    {
-        return SelectedCategoryIndex != -1;
-    }
-    public void CreateOrEditCommandExecute()
+    public void CreateOrEditQuizCommandExecute()
     {
         if (_selectedQuiz != null) _navigationStore.CurrentViewModel = new EditQuizViewModel(_navigationStore, _dataStore, _selectedQuiz);
         else _navigationStore.CurrentViewModel = new CreateQuizViewModel(_navigationStore, _dataStore);
@@ -125,5 +158,36 @@ public class MainMenuViewModel : ObservableObject
         {
             _dataStore.ImportQuizAsync(openFileDialog.FileName);
         }
+    }
+
+    //Kategorier
+    public bool CategoryIsSelected()
+    {
+        return SelectedCategoryIndex >= 0;
+    }
+
+    public void CreateOrEditCategoryCommandExecute()
+    {
+        _navigationStore.CurrentViewModel = new CreateCategoryViewModel(_navigationStore, _dataStore, _selectedCategory ?? new Category(string.Empty));
+    }
+    public void DeleteCategoryCommandExecute()
+    {
+        //TODO
+    }
+    public void GenerateQuizCommandExecute(object param)
+    {
+        System.Collections.IList items = (System.Collections.IList)param;
+        Quiz generatedQuiz = _dataStore.GenerateQuizByCategories(items.Cast<Category>().ToArray(), CategoryQuestionAmount);
+
+        _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _dataStore, generatedQuiz);
+    }
+    public bool GenerateQuizCommandCanExecute(object param)
+    {
+        return SelectedCategoryIndex != -1;
+    }
+
+    public void CreateOrEditQuestionCommandExecute()
+    {
+        _navigationStore.CurrentViewModel = new CreateQuestionViewModel(_navigationStore, _dataStore, _selectedQuestion);
     }
 }

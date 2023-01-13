@@ -16,13 +16,11 @@ using System.Windows.Shapes;
 namespace Labb3_Databaser_NET22.Views
 {
     /// <summary>
-    /// Interaction logic for CreateQuizView.xaml
+    /// Interaction logic for CreateCategoryView.xaml
     /// </summary>
-    public partial class CreateQuizView : UserControl
+    public partial class CreateCategoryView : UserControl
     {
-
-
-        public CreateQuizView()
+        public CreateCategoryView()
         {
             InitializeComponent();
         }
