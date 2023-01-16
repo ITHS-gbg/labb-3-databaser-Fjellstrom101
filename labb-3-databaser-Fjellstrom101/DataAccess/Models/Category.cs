@@ -9,13 +9,16 @@ public class Category
 
 	private IEnumerable<Question> _questions;
 
-    [BsonId]
-    public ObjectId Id { get; set; }
+    [BsonId] public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
     [BsonElement]
     public IEnumerable<Question> Questions => _questions;
     [BsonElement]
-    public string Title { get; set; }
-    
+    public string Title { get; set;}
+
+    public Category()
+    {
+        
+    }
     public Category(string title)
     {
         Title = title;

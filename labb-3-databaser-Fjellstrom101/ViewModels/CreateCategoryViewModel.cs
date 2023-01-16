@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Labb3_Databaser_NET22.DataModels;
 using Labb3_Databaser_NET22.Stores;
 using System.Windows;
+using MongoDB.Bson;
 
 namespace Labb3_Databaser_NET22.ViewModels;
 
@@ -35,12 +36,16 @@ public class CreateCategoryViewModel : ObservableObject
 
         SaveCommand = new RelayCommand(SaveCommandExecute, SaveCommandCanExecute);
         CancelCommand = new RelayCommand(CancelCommandExecute);
+
+        Title = category.Title;
     }
 
     public void SaveCommandExecute()
     {
+        _category.Title = Title;
 
-        _dataStore.UpsertCategory(new Category(Title));
+        _dataStore.UpdateCategory(_category);
+
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore, 2);
     }
     public bool SaveCommandCanExecute()

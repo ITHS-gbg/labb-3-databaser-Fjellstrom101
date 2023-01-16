@@ -170,8 +170,8 @@
                         FontSize="16"
                         FontWeight="Bold"
                         ItemsSource="{Binding Questions}"
-                        SelectedIndex="{Binding SelectedQuestionIndex}"
-                        SelectionMode="Multiple">
+                        SelectedItem="{Binding SelectedQuestion}"
+                        SelectionMode="Single">
 
                         <ListView.View>
                             <GridView>
@@ -242,6 +242,7 @@
                         FontWeight="Bold"
                         ItemsSource="{Binding Categories}"
                         SelectedIndex="{Binding SelectedCategoryIndex}"
+                        SelectedValue="{Binding SelectedCategory}"
                         SelectionMode="Multiple">
 
                         <ListView.View>

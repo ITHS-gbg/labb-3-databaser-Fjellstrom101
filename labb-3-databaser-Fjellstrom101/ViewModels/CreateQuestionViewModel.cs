@@ -5,6 +5,7 @@ using Labb3_Databaser_NET22.Stores;
 using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Labb3_Databaser_NET22.ViewModels;
 
@@ -75,13 +76,22 @@ public class CreateQuestionViewModel : ObservableObject
         CancelCommand = new RelayCommand(CancelCommandExecute);
         AddImageCommand = new RelayCommand(AddImageCommandExecute);
         DeleteImageCommand = new RelayCommand(DeleteImageCommandExecute, DeleteImageCommandCanExecute);
+
+        Statement = question.Statement;
+        Category = question.Category;
+        ImageFilePath = question.ImageFilePath;
+        CorrectAnswer = question.CorrectAnswer;
+
+        Answers[0] = question.Answers[0];
+        Answers[1] = question.Answers[1];
+        Answers[2] = question.Answers[2];
+        Answers[3] = question.Answers[3];
     }
 
     public void SaveCommandExecute()
     {
-
-        //_dataStore.AddQuiz(new Quiz(Statement, Questions));
-        _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore);
+        _dataStore.UpdateQuestion(new Question(_question.Id, Statement, Category, ImageFilePath, Answers.ToArray(), CorrectAnswer));
+        _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore, 1);
     }
     public bool SaveCommandCanExecute()
     {
@@ -89,7 +99,7 @@ public class CreateQuestionViewModel : ObservableObject
     }
     public void CancelCommandExecute()
     {
-        _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore);
+        _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore, 1);
     }
     public void AddImageCommandExecute()
     {

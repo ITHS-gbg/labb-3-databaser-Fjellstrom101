@@ -26,15 +26,16 @@ public class DataStore
     IRepository<Question> _questionManager;
 
     public IEnumerable<Category> Categories => _categoryManager.GetAll();
+
     public IEnumerable<Quiz> Quizzes => _quizManager.GetAll();
     public IEnumerable<Question> Questions => _questionManager.GetAll();
 
 
     public DataStore()
     {
-        _categoryManager = new CategoryManager();
-        _quizManager = new QuizManager();
-        _questionManager = new QuestionManager();
+        _categoryManager = new CategoryRepository();
+        _quizManager = new QuizRepository();
+        _questionManager = new QuestionRepository();
 
         Initialize();
     }
@@ -346,8 +347,27 @@ public class DataStore
         return Categories.Select(a => a.Title).Concat(retList).Distinct();
     }
 
-    public void UpsertCategory(Category category)
+    public void UpdateCategory(Category category)
     {
         _categoryManager.Update(category);
+    }
+    public void AddCategory(Category category)
+    {
+        _categoryManager.Add(category);
+    }
+
+    public void DeleteCategory(Category category)
+    {
+        _categoryManager.Delete(category);
+    }
+
+    public void DeleteQuestion(Question question)
+    {
+        _questionManager.Delete(question);
+    }
+
+    public void UpdateQuestion(Question question)
+    {
+        _questionManager.Update(question);
     }
 }

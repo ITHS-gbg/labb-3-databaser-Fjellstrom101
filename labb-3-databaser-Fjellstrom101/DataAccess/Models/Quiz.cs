@@ -20,7 +20,7 @@ public class Quiz
     public IEnumerable<Question> Questions => _questions;
     [BsonElement]
     public string Title => _title;
-    [BsonIgnore]
+    [BsonElement]
     public string FolderPath { get; set; }
 
 

@@ -5,12 +5,10 @@ using MongoDB.Driver;
 
 namespace DataAccess;
 
-public class CategoryManager : IRepository<Category>
+public class QuizRepository : IRepository<Quiz>
 {
-
-    private IMongoCollection<Category> _collection;
-
-    public CategoryManager()
+    private IMongoCollection<Quiz> _collection;
+    public QuizRepository()
     {
         var hostname = "localhost";
         var databaseName = "SuperDuperQuizzenNo1";
@@ -18,26 +16,25 @@ public class CategoryManager : IRepository<Category>
 
         var client = new MongoClient(connectionString);
         var database = client.GetDatabase(databaseName);
-        _collection = database.GetCollection<Category>("categories", new MongoCollectionSettings() { AssignIdOnInsert = true });
-
+        _collection = database.GetCollection<Quiz>("quizzes", new MongoCollectionSettings() { AssignIdOnInsert = true });
 
     }
-    public void Add(Category item)
+    public void Add(Quiz item)
     {
         _collection.InsertOne(item);
     }
 
-    public IEnumerable<Category> GetAll()
+    public IEnumerable<Quiz> GetAll()
     {
         return _collection.Find(_ => true).ToEnumerable();
     }
 
-    public Category Get(ObjectId id)
+    public Quiz Get(ObjectId id)
     {
         return _collection.Find(c => c.Id.Equals(id)).FirstOrDefault();
     }
 
-    public Category FindOrCreate(Category item)
+    public Quiz FindOrCreate(Quiz item)
     {
         //var filterDefinition = Builders<Quiz>.Filter.Eq("Name", item);
         //var updateDefinition = Builders<Quiz>.Update.SetOnInsert("Name", item);
@@ -53,21 +50,21 @@ public class CategoryManager : IRepository<Category>
         return null;
     }
 
-    public void Update(Category item)
+    public void Update(Quiz item)
     {
-        var filter = Builders<Category>.Filter.Eq("Id", item.Id);
+        var filter = Builders<Quiz>.Filter.Eq("Id", item.Id);
         _collection.FindOneAndReplace(
             filter,
             item,
-            new FindOneAndReplaceOptions<Category, Category>()
+            new FindOneAndReplaceOptions<Quiz, Quiz>()
             {
                 IsUpsert = true
             });
     }
 
-    public void Delete(Category item)
+    public void Delete(Quiz item)
     {
-        var filter = Builders<Category>.Filter.Eq("Id", item.Id);
+        var filter = Builders<Quiz>.Filter.Eq("Id", item.Id);
         _collection.FindOneAndDelete(filter);
     }
 }

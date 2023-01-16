@@ -1,15 +1,16 @@
-﻿using Labb3_Databaser_NET22.DataModels;
+﻿using System.Collections.Generic;
+using Labb3_Databaser_NET22.DataModels;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Collections.Generic;
 
 namespace DataAccess;
 
-public class QuestionManager : IRepository<Question>
+public class CategoryRepository : IRepository<Category>
 {
-    private IMongoCollection<Question> _collection;
 
-    public QuestionManager()
+    private IMongoCollection<Category> _collection;
+
+    public CategoryRepository()
     {
         var hostname = "localhost";
         var databaseName = "SuperDuperQuizzenNo1";
@@ -17,26 +18,26 @@ public class QuestionManager : IRepository<Question>
 
         var client = new MongoClient(connectionString);
         var database = client.GetDatabase(databaseName);
-        _collection = database.GetCollection<Question>("questions", new MongoCollectionSettings() { AssignIdOnInsert = true });
+        _collection = database.GetCollection<Category>("categories", new MongoCollectionSettings() { AssignIdOnInsert = true });
 
 
     }
-    public void Add(Question item)
+    public void Add(Category item)
     {
         _collection.InsertOne(item);
     }
 
-    public IEnumerable<Question> GetAll()
+    public IEnumerable<Category> GetAll()
     {
         return _collection.Find(_ => true).ToEnumerable();
     }
 
-    public Question Get(ObjectId id)
+    public Category Get(ObjectId id)
     {
         return _collection.Find(c => c.Id.Equals(id)).FirstOrDefault();
     }
 
-    public Question FindOrCreate(Question item)
+    public Category FindOrCreate(Category item)
     {
         //var filterDefinition = Builders<Quiz>.Filter.Eq("Name", item);
         //var updateDefinition = Builders<Quiz>.Update.SetOnInsert("Name", item);
@@ -52,21 +53,21 @@ public class QuestionManager : IRepository<Question>
         return null;
     }
 
-    public void Update(Question item)
+    public void Update(Category item)
     {
-        var filter = Builders<Question>.Filter.Eq("Id", item.Id);
+        var filter = Builders<Category>.Filter.Eq("Id", item.Id);
         _collection.FindOneAndReplace(
             filter,
             item,
-            new FindOneAndReplaceOptions<Question, Question>()
+            new FindOneAndReplaceOptions<Category, Category>()
             {
                 IsUpsert = true
             });
     }
 
-    public void Delete(Question item)
+    public void Delete(Category item)
     {
-        var filter = Builders<Question>.Filter.Eq("Id", item.Id);
+        var filter = Builders<Category>.Filter.Eq("Id", item.Id);
         _collection.FindOneAndDelete(filter);
     }
 }
