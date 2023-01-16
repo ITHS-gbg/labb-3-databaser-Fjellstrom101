@@ -48,7 +48,7 @@ public class CreateQuizViewModel : ObservableObject
         set
         {
             SetProperty(ref _selectedQuestion, value);
-            DeleteQuestionCommand.NotifyCanExecuteChanged();
+            RemoveQuestionCommand.NotifyCanExecuteChanged();
 
             if (value != null)
             {
@@ -94,7 +94,6 @@ public class CreateQuizViewModel : ObservableObject
         set
         {
             SetProperty(ref _imageFilePath, value);
-            DeleteImageCommand.NotifyCanExecuteChanged();
         }
     }
     public int CorrectAnswer
@@ -124,10 +123,8 @@ public class CreateQuizViewModel : ObservableObject
 
     public IRelayCommand SaveCommand { get; }
     public IRelayCommand CancelCommand { get; }
-    public IRelayCommand AddImageCommand { get; }
-    public IRelayCommand DeleteImageCommand { get; }
     public IRelayCommand AddQuestionCommand { get; }
-    public IRelayCommand DeleteQuestionCommand { get; }
+    public IRelayCommand RemoveQuestionCommand { get; }
 
 
 
@@ -139,10 +136,9 @@ public class CreateQuizViewModel : ObservableObject
 
         SaveCommand = new RelayCommand(SaveCommandExecute, SaveCommandCanExecute);
         CancelCommand = new RelayCommand(CancelCommandExecute);
-        AddImageCommand = new RelayCommand(AddImageCommandExecute);
-        DeleteImageCommand = new RelayCommand(DeleteImageCommandExecute, DeleteImageCommandCanExecute);
+        
         AddQuestionCommand = new RelayCommand(AddQuestionCommandExecute, AddQuestionCommandCanExecute);
-        DeleteQuestionCommand = new RelayCommand(DeleteQuestionCommandExecute, DeleteQuestionCommandCanExecute);
+        RemoveQuestionCommand = new RelayCommand(DeleteQuestionCommandExecute, DeleteQuestionCommandCanExecute);
 
         Answers.CollectionChanged += (sender, e) => { AddQuestionCommand.NotifyCanExecuteChanged(); SaveCommand.NotifyCanExecuteChanged();};
 
@@ -186,23 +182,7 @@ public class CreateQuizViewModel : ObservableObject
     {
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore);
     }
-    public void AddImageCommandExecute()
-    {
-        OpenFileDialog openFileDialog = new OpenFileDialog();
-        openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*";
-        openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
-        if (openFileDialog.ShowDialog() == true)
-            ImageFilePath = openFileDialog.FileName;
-    }
-    public void DeleteImageCommandExecute()
-    {
-        ImageFilePath = string.Empty;
-    }
-    public bool DeleteImageCommandCanExecute()
-    {
-        return !string.IsNullOrEmpty(_imageFilePath);
-    }
     public void AddQuestionCommandExecute()
     {
         if (QuestionIsSelected)
