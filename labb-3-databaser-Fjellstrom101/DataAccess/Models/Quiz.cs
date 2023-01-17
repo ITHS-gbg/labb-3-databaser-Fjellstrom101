@@ -33,16 +33,17 @@ public class Quiz
     [BsonConstructor]
     public Quiz(string title, IEnumerable<Question> questions)
     {
+        Id = ObjectId.GenerateNewId();
         _title = title;
 
         _questions = new List<Question>();
         (_questions as List<Question>)?.AddRange(questions);
     }
-    [JsonConstructor]
-    public Quiz(string title, IEnumerable<Question> questions, string folderPath)
+
+    public Quiz(string title, IEnumerable<Question> questions, ObjectId id)
     {
+        Id = id;
         _title = title;
-        FolderPath = folderPath;
 
         _questions = new List<Question>();
         (_questions as List<Question>)?.AddRange(questions);
@@ -78,6 +79,6 @@ public class Quiz
 
     public Quiz Clone()
     {
-        return new Quiz(Title, new List<Question>(_questions)); //TODO Deep copy
+        return new Quiz(Title, new List<Question>(_questions));
     }
 }

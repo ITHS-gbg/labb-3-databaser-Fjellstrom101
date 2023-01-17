@@ -4,6 +4,7 @@ using Labb3_Databaser_NET22.DataModels;
 using Labb3_Databaser_NET22.Stores;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -20,6 +21,7 @@ public class CreateQuestionViewModel : ObservableObject
     private string _imageFilePath = "";
     private int _correctAnswer;
     private string _category = "";
+    private IEnumerable<string> _categories;
 
     public string Statement
     {
@@ -27,6 +29,7 @@ public class CreateQuestionViewModel : ObservableObject
         set
         {
             SetProperty(ref _statement, value);
+            SaveCommand.NotifyCanExecuteChanged();
         }
     }
     public ObservableCollection<string> Answers
@@ -57,6 +60,16 @@ public class CreateQuestionViewModel : ObservableObject
         set
         {
             SetProperty(ref _category, value);
+            SaveCommand.NotifyCanExecuteChanged();
+        }
+    }
+
+    public IEnumerable<string> Categories
+    {
+        get => _categories;
+        set
+        {
+            SetProperty(ref _categories, value);
         }
     }
 
@@ -77,6 +90,10 @@ public class CreateQuestionViewModel : ObservableObject
         AddImageCommand = new RelayCommand(AddImageCommandExecute);
         DeleteImageCommand = new RelayCommand(DeleteImageCommandExecute, DeleteImageCommandCanExecute);
 
+        Answers.CollectionChanged += (sender, e) => { SaveCommand.NotifyCanExecuteChanged(); };
+
+        _categories = dataStore.GetCategoriesStringList();
+
         Statement = question.Statement;
         Category = question.Category;
         ImageFilePath = question.ImageFilePath;
@@ -95,7 +112,12 @@ public class CreateQuestionViewModel : ObservableObject
     }
     public bool SaveCommandCanExecute()
     {
-        return !string.IsNullOrEmpty(Statement);
+        return !string.IsNullOrEmpty(Statement) &&
+               !string.IsNullOrEmpty(Category) &&
+               !string.IsNullOrEmpty(Answers[0]) &&
+               !string.IsNullOrEmpty(Answers[1]) &&
+               !string.IsNullOrEmpty(Answers[2]) &&
+               !string.IsNullOrEmpty(Answers[3]);
     }
     public void CancelCommandExecute()
     {

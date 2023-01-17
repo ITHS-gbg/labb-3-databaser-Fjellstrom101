@@ -35,7 +35,6 @@ public class MainMenuViewModel : ObservableObject
             OnPropertyChanged(nameof(CreateOrEditQuizButtonText));
             RemoveQuizCommand.NotifyCanExecuteChanged();
             PlayQuizCommand.NotifyCanExecuteChanged();
-            ExportQuizCommand.NotifyCanExecuteChanged();
         }
     }
     public Category? SelectedCategory
@@ -98,8 +97,6 @@ public class MainMenuViewModel : ObservableObject
     public IRelayCommand PlayQuizCommand { get; }
     public IRelayCommand CreateOrEditQuizCommand { get; }
     public IRelayCommand RemoveQuizCommand { get; }
-    public IRelayCommand ExportQuizCommand { get; }
-    public IRelayCommand ImportQuizCommand { get; }
 
     public IRelayCommand CreateOrEditQuestionCommand { get; }
     public IRelayCommand RemoveQuestionCommand { get; }
@@ -119,8 +116,6 @@ public class MainMenuViewModel : ObservableObject
         PlayQuizCommand = new RelayCommand(PlayQuizCommandExecute, QuizIsSelected);
         CreateOrEditQuizCommand = new RelayCommand(CreateOrEditQuizCommandExecute);
         RemoveQuizCommand = new RelayCommand(DeleteQuizCommandExecute, QuizIsSelected);
-        ExportQuizCommand = new RelayCommand(ExportQuizCommandExecute, QuizIsSelected);
-        ImportQuizCommand = new RelayCommand(ImportQuizCommandExecute);
 
         GenerateQuizCommand = new RelayCommand<object>(GenerateQuizCommandExecute, GenerateQuizCommandCanExecute);
         CreateOrEditCategoryCommand = new RelayCommand(CreateOrEditCategoryCommandExecute);
@@ -146,36 +141,12 @@ public class MainMenuViewModel : ObservableObject
 
     public void CreateOrEditQuizCommandExecute()
     {
-        if (_selectedQuiz != null) _navigationStore.CurrentViewModel = new EditQuizViewModel(_navigationStore, _dataStore, _selectedQuiz);
-        else _navigationStore.CurrentViewModel = new CreateQuizViewModel(_navigationStore, _dataStore);
+       _navigationStore.CurrentViewModel = new CreateQuizViewModel(_navigationStore, _dataStore, SelectedQuiz ?? new Quiz());
     }
     public void DeleteQuizCommandExecute()
     {
-        _dataStore.RemoveQuiz(SelectedQuiz, true);
-    }
-    private void ExportQuizCommandExecute()
-    {
-        SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-        saveFileDialog1.Filter = "Quiz File|*.quiz";
-        saveFileDialog1.Title = "Export Quiz";
-        saveFileDialog1.ShowDialog();
-
-        if (saveFileDialog1.FileName != "")
-        {
-            _dataStore.ExportQuizAsync(SelectedQuiz, saveFileDialog1.FileName);
-        }
-    }
-    private void ImportQuizCommandExecute()
-    {
-        OpenFileDialog openFileDialog = new OpenFileDialog();
-        openFileDialog.Filter = "Quiz File|*.quiz";
-        openFileDialog.Title = "Import Quiz";
-        openFileDialog.ShowDialog();
-
-        if (openFileDialog.FileName != "")
-        {
-            _dataStore.ImportQuizAsync(openFileDialog.FileName);
-        }
+        _dataStore.RemoveQuiz(SelectedQuiz);
+        _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore);
     }
 
     //Kategorier
