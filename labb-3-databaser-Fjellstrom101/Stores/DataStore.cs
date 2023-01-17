@@ -119,5 +119,14 @@ public class DataStore
             var newQuestionList = quiz.Questions.Where(q => !q.Id.Equals(question.Id)).Append(question);
             UpdateQuiz(new Quiz(quiz.Title, newQuestionList, quiz.Id));
         }
+
+
+
+        var questionCategory = Categories.FirstOrDefault(c => c.Title.Equals(question.Category));
+        var newCategoryQuestionList = questionCategory.Questions
+                                                        .Where(q => !q.Id.Equals(question.Id))
+                                                        .Append(question);
+
+        UpdateCategory(new Category(questionCategory.Id, newCategoryQuestionList, questionCategory.Title));
     }
 }
