@@ -161,6 +161,7 @@ public class CreateQuizViewModel : ObservableObject
 
         }
 
+        Title = quiz.Title;
     }
 
     private bool FilterQuestions(object obj)
@@ -177,7 +178,7 @@ public class CreateQuizViewModel : ObservableObject
     public void SaveCommandExecute()
     {
 
-        _dataStore.AddQuiz(new Quiz(Title, QuizQuestions));
+        _dataStore.UpdateQuiz(new Quiz(Title, QuizQuestions, _quiz.Id));
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore);
     }
     public bool SaveCommandCanExecute()

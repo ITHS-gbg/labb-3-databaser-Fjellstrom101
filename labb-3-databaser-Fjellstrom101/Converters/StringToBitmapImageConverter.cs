@@ -17,7 +17,8 @@ public class StringToBitmapImageConverter : IValueConverter
         if (value == null || value is not string) return DependencyProperty.UnsetValue;
 
 
-        if (string.IsNullOrEmpty(value as string)) value = Question.NoImageFilePath;
+        if (string.IsNullOrEmpty(value as string) ||
+            !Uri.IsWellFormedUriString(value as string, UriKind.Absolute)) value = Question.NoImageFilePath;
 
         var bitmap = new BitmapImage();
         bitmap.BeginInit();
