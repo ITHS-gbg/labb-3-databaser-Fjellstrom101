@@ -114,7 +114,8 @@
         <Grid
             Grid.Row="5"
             Grid.RowSpan="3"
-            Grid.Column="2">
+            Grid.Column="2"
+            Grid.ColumnSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
@@ -154,18 +155,22 @@
             <Label Height="{Binding ActualHeight, ElementName=QuestionsLabel}" />
             <CheckBox
                 Grid.Row="1"
+                HorizontalAlignment="Center"
                 VerticalContentAlignment="Center"
                 IsChecked="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=0}" />
             <CheckBox
                 Grid.Row="2"
+                HorizontalAlignment="Center"
                 VerticalContentAlignment="Center"
                 IsChecked="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=1}" />
             <CheckBox
                 Grid.Row="3"
+                HorizontalAlignment="Center"
                 VerticalContentAlignment="Center"
                 IsChecked="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=2}" />
             <CheckBox
                 Grid.Row="4"
+                HorizontalAlignment="Center"
                 VerticalContentAlignment="Center"
                 IsChecked="{Binding CorrectAnswer, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CorrectAnswerConverter}, ConverterParameter=3}" />
         </Grid>
