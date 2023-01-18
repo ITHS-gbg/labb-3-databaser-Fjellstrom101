@@ -22,7 +22,7 @@ public class PlayQuizViewModel : ObservableObject
     private Question? _currentQuestion;
     private int _incorrectAnswer = -1;
     private int _correctAnswer = -1;
-    private int[] _score = new[] { 0, 0 };
+    private readonly int[] _score = new[] { 0, 0 };
     private string _imageUrl;
     private bool _showImageView = false;
 

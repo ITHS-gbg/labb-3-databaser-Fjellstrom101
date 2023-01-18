@@ -35,10 +35,7 @@ public class CreateQuestionViewModel : ObservableObject
     public ObservableCollection<string> Answers
     {
         get => _answers;
-        set
-        {
-            SetProperty(ref _answers, value);
-        }
+        set => SetProperty(ref _answers, value);
     }
     public string ImageUrl
     {
@@ -67,10 +64,7 @@ public class CreateQuestionViewModel : ObservableObject
     public IEnumerable<string> Categories
     {
         get => _categories;
-        set
-        {
-            SetProperty(ref _categories, value);
-        }
+        set => SetProperty(ref _categories, value);
     }
 
     public IRelayCommand SaveCommand { get; }
@@ -125,7 +119,7 @@ public class CreateQuestionViewModel : ObservableObject
     }
     public void AddImageCommandExecute()
     {
-        OpenFileDialog openFileDialog = new OpenFileDialog();
+        var openFileDialog = new OpenFileDialog();
         openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*";
         openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 

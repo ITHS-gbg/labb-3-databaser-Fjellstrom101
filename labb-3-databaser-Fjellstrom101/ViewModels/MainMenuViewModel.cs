@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -23,8 +25,12 @@ public class MainMenuViewModel : ObservableObject
 
     private int _selectedCategoryIndex = -1;
     private int _selectedTab = 0;
+    private string _questionFilter = string.Empty;
+    private string _selectedFilterCategory = string.Empty;
 
-    public Quiz? SelectedQuiz
+    public ICollectionView QuestionsCollectionView{ get; }
+
+public Quiz? SelectedQuiz
     {
         get => _selectedQuiz;
         set
@@ -68,6 +74,18 @@ public class MainMenuViewModel : ObservableObject
     public string CreateOrEditQuizButtonText { get; set; } = "Skapa Quiz";
     public string CreateOrEditQuestionButtonText { get; set; } = "Skapa Fråga";
     public string CreateOrEditCategoryButtonText { get; set; } = "Skapa Kategori";
+
+    public string QuestionFilter
+    {
+        get => _questionFilter;
+        set
+        {
+            SetProperty(ref _questionFilter, value);
+
+            QuestionsCollectionView.Refresh();
+        }
+
+    }
     public int CategoryQuestionAmount { get; set; } = 10;
     public int SelectedCategoryIndex
     {
@@ -89,9 +107,22 @@ public class MainMenuViewModel : ObservableObject
         }
     }
 
+    public string SelectedFilterCategory
+    {
+        get => _selectedFilterCategory;
+        set
+        {
+            SetProperty(ref _selectedFilterCategory, value);
+
+            QuestionsCollectionView.Refresh();
+        }
+    }
+
     public IEnumerable<Quiz> Quizzes => _dataStore.Quizzes;
     public IEnumerable<Category> Categories => _dataStore.Categories;
     public IEnumerable<Question> Questions => _dataStore.Questions;
+
+    public IEnumerable<string> CategoriesList => _dataStore.GetCategoriesStringList().Prepend(string.Empty);
 
 
 
@@ -113,6 +144,14 @@ public class MainMenuViewModel : ObservableObject
         _dataStore = dataStore;
         _navigationStore = navigationStore;
         SelectedTab = openTabIndex;
+
+        QuestionsCollectionView = CollectionViewSource.GetDefaultView(Questions);
+        QuestionsCollectionView.Filter = FilterQuestions;
+        QuestionsCollectionView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Question.Category)));
+        QuestionsCollectionView.SortDescriptions.Add(new SortDescription(nameof(Question.Statement), ListSortDirection.Ascending));
+
+
+
 
         PlayQuizCommand = new RelayCommand(PlayQuizCommandExecute, QuizIsSelected);
         CreateOrEditQuizCommand = new RelayCommand(CreateOrEditQuizCommandExecute);
@@ -191,5 +230,14 @@ public class MainMenuViewModel : ObservableObject
     public bool QuestionIsSelected()
     {
         return SelectedQuestion is not null;
+    }
+    private bool FilterQuestions(object obj)
+    {
+        if (obj is Question question)
+        {
+            return question.Statement.Contains(QuestionFilter, StringComparison.InvariantCultureIgnoreCase) && question.Category.Contains(SelectedFilterCategory);
+        }
+
+        return false;
     }
 }
