@@ -196,8 +196,8 @@ public class CreateQuizViewModel : ObservableObject
 
     public void AddQuestionCommandExecute()
     {
-        QuizQuestions.Add(SelectedDatabaseQuestion);
-        DatabaseQuestions.Remove(SelectedDatabaseQuestion);
+        QuizQuestions.Add(SelectedDatabaseQuestion!);
+        DatabaseQuestions.Remove(SelectedDatabaseQuestion!);
 
         SaveCommand.NotifyCanExecuteChanged();
     }
@@ -209,8 +209,8 @@ public class CreateQuizViewModel : ObservableObject
 
     public void RemoveQuestionCommandExecute()
     {
-        DatabaseQuestions.Add(SelectedQuizQuestion);
-        QuizQuestions.Remove(SelectedQuizQuestion);
+        DatabaseQuestions.Add(SelectedQuizQuestion!);
+        QuizQuestions.Remove(SelectedQuizQuestion!);
 
         SaveCommand.NotifyCanExecuteChanged();
     }

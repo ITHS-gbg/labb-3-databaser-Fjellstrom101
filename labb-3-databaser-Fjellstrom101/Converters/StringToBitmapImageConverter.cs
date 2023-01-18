@@ -18,12 +18,12 @@ public class StringToBitmapImageConverter : IValueConverter
 
 
         if (string.IsNullOrEmpty(value as string) ||
-            !Uri.IsWellFormedUriString(value as string, UriKind.Absolute)) value = Question.NoImageFilePath;
+            !Uri.IsWellFormedUriString(value as string, UriKind.Absolute)) value = "https://i.imgur.com/a9qdLZ2.jpg";
 
         var bitmap = new BitmapImage();
         bitmap.BeginInit();
         bitmap.CacheOption = BitmapCacheOption.OnLoad;
-        bitmap.UriSource = new Uri(value as string);
+        bitmap.UriSource = new Uri((value as string)!);
         bitmap.EndInit();
 
         return bitmap;

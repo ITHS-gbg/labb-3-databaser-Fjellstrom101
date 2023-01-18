@@ -85,7 +85,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Label>Bild-URL:</Label>
-            <TextBox Grid.Row="1" Text="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Grid.Row="1" Text="{Binding ImageUrl, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
         <!--  Bild  -->
         <Grid
@@ -104,7 +104,7 @@
                 CornerRadius="6"
                 Style="{StaticResource ImageElement}">
                 <Border.Background>
-                    <ImageBrush ImageSource="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToBitmapImageConverter}}" Stretch="Uniform" />
+                    <ImageBrush ImageSource="{Binding ImageUrl, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToBitmapImageConverter}}" Stretch="Uniform" />
                 </Border.Background>
             </Border>
         </Grid>

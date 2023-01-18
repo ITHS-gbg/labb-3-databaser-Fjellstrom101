@@ -16,7 +16,7 @@ public class Category
     public IEnumerable<Question> Questions => _questions;
 
     [BsonElement]
-    public string Title { get; set;}
+    public string Title { get; set;} = string.Empty;
 
     public Category()
     {
@@ -36,12 +36,4 @@ public class Category
 
     }
 
-    public void AddQuestion(Question question)
-    {
-        (_questions as List<Question>).Add(question);
-    }
-    public void RemoveQuestion(Question question)
-    {
-        (_questions as List<Question>).Remove(question);
-    }
 }

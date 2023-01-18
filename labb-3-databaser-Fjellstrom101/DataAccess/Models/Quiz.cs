@@ -20,8 +20,6 @@ public class Quiz
     public IEnumerable<Question> Questions => _questions;
     [BsonElement]
     public string Title => _title;
-    [BsonElement]
-    public string FolderPath { get; set; }
 
 
 
@@ -51,13 +49,13 @@ public class Quiz
 
     public Question GetRandomQuestion()
     {
-        if (!_questions.Any()) return null;
+        if (!_questions.Any()) return null!;
 
         var index = _random.Next(_questions.Count());
         var randomQuestion = _questions.ElementAtOrDefault(index);
 
         if((_questions as List<Question>)?.Count!= 0) RemoveQuestion(index);
-        return randomQuestion;
+        return randomQuestion!;
     }
 
     public void AddQuestion(string statement, int correctAnswer, params string[] answers)
@@ -65,10 +63,10 @@ public class Quiz
         (_questions as List<Question>)?.Add(new Question(statement, "Allmänt", "", answers, correctAnswer));
     }
 
-    public void AddQuestion(string statement, int correctAnswer, string category, string imageFilePath, params string[] answers)
+    public void AddQuestion(string statement, int correctAnswer, string category, string imageUrl, params string[] answers)
     {
         var tempQuestion = new Question(statement, category, "", answers, correctAnswer);
-        tempQuestion.ImageFilePath = imageFilePath;
+        tempQuestion.ImageUrl = imageUrl;
         (_questions as List<Question>)?.Add(tempQuestion);
     }
 

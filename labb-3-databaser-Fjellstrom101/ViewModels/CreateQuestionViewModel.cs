@@ -18,7 +18,7 @@ public class CreateQuestionViewModel : ObservableObject
 
     private string _statement = "";
     private ObservableCollection<string> _answers = new ObservableCollection<string>() { "", "", "", "" };
-    private string _imageFilePath = "";
+    private string _imageUrl = "";
     private int _correctAnswer;
     private string _category = "";
     private IEnumerable<string> _categories;
@@ -40,12 +40,12 @@ public class CreateQuestionViewModel : ObservableObject
             SetProperty(ref _answers, value);
         }
     }
-    public string ImageFilePath
+    public string ImageUrl
     {
-        get => _imageFilePath;
+        get => _imageUrl;
         set
         {
-            SetProperty(ref _imageFilePath, value);
+            SetProperty(ref _imageUrl, value);
             DeleteImageCommand.NotifyCanExecuteChanged();
         }
     }
@@ -96,7 +96,7 @@ public class CreateQuestionViewModel : ObservableObject
 
         Statement = question.Statement;
         Category = question.Category;
-        ImageFilePath = question.ImageFilePath;
+        ImageUrl = question.ImageUrl;
         CorrectAnswer = question.CorrectAnswer;
 
         Answers[0] = question.Answers[0];
@@ -107,7 +107,7 @@ public class CreateQuestionViewModel : ObservableObject
 
     public void SaveCommandExecute()
     {
-        _dataStore.UpdateQuestion(new Question(_question.Id, Statement, Category, ImageFilePath, Answers.ToArray(), CorrectAnswer));
+        _dataStore.UpdateQuestion(new Question(_question.Id, Statement, Category, ImageUrl, Answers.ToArray(), CorrectAnswer));
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore, 1);
     }
     public bool SaveCommandCanExecute()
@@ -130,14 +130,14 @@ public class CreateQuestionViewModel : ObservableObject
         openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
 
         if (openFileDialog.ShowDialog() == true)
-            ImageFilePath = openFileDialog.FileName;
+            ImageUrl = openFileDialog.FileName;
     }
     public void DeleteImageCommandExecute()
     {
-        ImageFilePath = string.Empty;
+        ImageUrl = string.Empty;
     }
     public bool DeleteImageCommandCanExecute()
     {
-        return !string.IsNullOrEmpty(_imageFilePath);
+        return !string.IsNullOrEmpty(_imageUrl);
     }
 }

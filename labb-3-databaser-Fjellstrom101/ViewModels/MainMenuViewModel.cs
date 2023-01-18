@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -131,7 +132,7 @@ public class MainMenuViewModel : ObservableObject
 
     public void PlayQuizCommandExecute()
     {
-        _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _dataStore,SelectedQuiz.Clone());
+        _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _dataStore,SelectedQuiz!.Clone());
     }
     public bool QuizIsSelected()
     {
@@ -145,7 +146,7 @@ public class MainMenuViewModel : ObservableObject
     }
     public void DeleteQuizCommandExecute()
     {
-        _dataStore.RemoveQuiz(SelectedQuiz);
+        _dataStore.RemoveQuiz(SelectedQuiz!);
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore);
     }
 
@@ -161,17 +162,17 @@ public class MainMenuViewModel : ObservableObject
     }
     public void DeleteCategoryCommandExecute()
     {
-        _dataStore.DeleteCategory(SelectedCategory);
+        _dataStore.DeleteCategory(SelectedCategory!);
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore, 2);
     }
-    public void GenerateQuizCommandExecute(object param)
+    public void GenerateQuizCommandExecute(object? param)
     {
-        System.Collections.IList items = (System.Collections.IList)param;
+        IList items = (System.Collections.IList)param!;
         Quiz generatedQuiz = _dataStore.GenerateQuizByCategories(items.Cast<Category>().ToArray(), CategoryQuestionAmount);
 
         _navigationStore.CurrentViewModel = new PlayQuizViewModel(_navigationStore, _dataStore, generatedQuiz);
     }
-    public bool GenerateQuizCommandCanExecute(object param)
+    public bool GenerateQuizCommandCanExecute(object? param)
     {
         return SelectedCategoryIndex != -1;
     }
@@ -183,7 +184,7 @@ public class MainMenuViewModel : ObservableObject
 
     public void DeleteQuestionCommandExecute()
     {
-        _dataStore.DeleteQuestion(SelectedQuestion);
+        _dataStore.DeleteQuestion(SelectedQuestion!);
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore, 1);
     }
 

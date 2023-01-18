@@ -11,9 +11,8 @@ public class QuestionRepository : IRepository<Question>
 
     public QuestionRepository()
     {
-        var hostname = "localhost";
         var databaseName = "SuperDuperQuizzenNo1";
-        var connectionString = $"mongodb://{hostname}:27017";
+        var connectionString = "mongodb+srv://linusfithsnet22:FRPezM0fuwutPYqX@linusfithsnet22.ojjbfd5.mongodb.net/?retryWrites=true&w=majority";
 
         var client = new MongoClient(connectionString);
         var database = client.GetDatabase(databaseName);
@@ -34,22 +33,6 @@ public class QuestionRepository : IRepository<Question>
     public Question Get(ObjectId id)
     {
         return _collection.Find(c => c.Id.Equals(id)).FirstOrDefault();
-    }
-
-    public Question FindOrCreate(Question item)
-    {
-        //var filterDefinition = Builders<Quiz>.Filter.Eq("Name", item);
-        //var updateDefinition = Builders<Quiz>.Update.SetOnInsert("Name", item);
-
-        //return _collection.FindOneAndUpdate(
-        //    filterDefinition,
-        //    updateDefinition,
-        //    new FindOneAndUpdateOptions<Quiz>()
-        //    {
-        //        IsUpsert = true,
-        //        ReturnDocument = ReturnDocument.After
-        //    });
-        return null;
     }
 
     public void Update(Question item)

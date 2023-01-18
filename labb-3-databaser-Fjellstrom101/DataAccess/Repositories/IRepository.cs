@@ -9,7 +9,6 @@ namespace DataAccess
 
         IEnumerable<T> GetAll();
         T Get(ObjectId id);
-        T FindOrCreate(T item);
 
         void Update(T item);
         void Delete(T item);

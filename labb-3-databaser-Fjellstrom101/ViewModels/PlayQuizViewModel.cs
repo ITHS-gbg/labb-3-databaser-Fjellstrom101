@@ -19,11 +19,11 @@ public class PlayQuizViewModel : ObservableObject
     private readonly NavigationStore _navigationStore;
     private readonly DataStore _dataStore;
 
-    private Question _currentQuestion;
+    private Question? _currentQuestion;
     private int _incorrectAnswer = -1;
     private int _correctAnswer = -1;
     private int[] _score = new[] { 0, 0 };
-    private string _imageFilePath;
+    private string _imageUrl;
     private bool _showImageView = false;
 
 
@@ -45,15 +45,15 @@ public class PlayQuizViewModel : ObservableObject
             AnswerQuestionCommand.NotifyCanExecuteChanged();
         }
     }
-    public Question CurrentQuestion
+    public Question? CurrentQuestion
     {
         set => SetProperty(ref _currentQuestion, value);
         get => _currentQuestion;
     }
-    public string ImageFilePath
+    public string ImageUrl
     {
-        get => _imageFilePath;
-        set => SetProperty(ref _imageFilePath, value);
+        get => _imageUrl;
+        set => SetProperty(ref _imageUrl, value);
     }
     public bool ShowImageView
     {
@@ -70,14 +70,16 @@ public class PlayQuizViewModel : ObservableObject
         _quiz = quiz;
         _dataStore = dataStore;
 
+        _imageUrl = string.Empty;
+
         AnswerQuestionCommand = new RelayCommand<object>(AnswerQuestionCommandHandler, AnswerQuestionCommandCanExecute);
         RenderQuestionAsync(true);
     }
 
-    private void AnswerQuestionCommandHandler(object parameter)
+    private void AnswerQuestionCommandHandler(object? parameter)
     {
         //För att slippa att knapparna gråas ut så skriver vi direkt till backing fields och inte till properties. Då slipper vi att AnswerQuestionCommand.NotifyCanExecuteChanged() körs, och knapparna behåller sina fina färger även fast man inte kan trycka på dom
-        _correctAnswer = CurrentQuestion.CorrectAnswer;
+        _correctAnswer = CurrentQuestion!.CorrectAnswer;
 
         if (int.Parse(parameter.ToString()) != CorrectAnswer)
         {
@@ -99,7 +101,7 @@ public class PlayQuizViewModel : ObservableObject
         RenderQuestionAsync();
     }
 
-    private bool AnswerQuestionCommandCanExecute(object parameter)
+    private bool AnswerQuestionCommandCanExecute(object? parameter)
     {
         return IncorrectAnswer == -1 && CorrectAnswer == -1;
     }
@@ -144,10 +146,10 @@ public class PlayQuizViewModel : ObservableObject
             _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore);
 
         }
-        else if (!string.IsNullOrEmpty(CurrentQuestion.ImageFilePath))
+        else if (!string.IsNullOrEmpty(CurrentQuestion.ImageUrl))
         {
             ShowImageView = true;
-            ImageFilePath = CurrentQuestion.ImageFilePath;
+            ImageUrl = CurrentQuestion.ImageUrl;
         }
     }
 

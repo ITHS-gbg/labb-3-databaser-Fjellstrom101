@@ -175,7 +175,7 @@
                         <DataTrigger Binding="{Binding ShowImageView, UpdateSourceTrigger=PropertyChanged}" Value="True">
                             <Setter Property="Border.Background">
                                 <Setter.Value>
-                                    <ImageBrush ImageSource="{Binding ImageFilePath, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToBitmapImageConverter}}" Stretch="UniformToFill" />
+                                    <ImageBrush ImageSource="{Binding ImageUrl, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource StringToBitmapImageConverter}}" Stretch="UniformToFill" />
                                 </Setter.Value>
                             </Setter>
                         </DataTrigger>

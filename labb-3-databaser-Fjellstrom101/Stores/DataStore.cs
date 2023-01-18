@@ -37,12 +37,6 @@ public class DataStore
     }
 
 
-
-    public void AddQuiz(Quiz quiz)
-    {
-        _quizRepository.Add(quiz);
-    }
-
     public void UpdateQuiz(Quiz quiz)
     {
         _quizRepository.Update(quiz);
@@ -54,9 +48,9 @@ public class DataStore
     
     public Quiz GenerateQuizByCategories(Category[] categories, int amount)
     {
-        List<Question> questions = new List<Question>();
-        Quiz returnQuiz = new Quiz("Custom Quiz", new List<Question>());
-        Random random = new Random();
+        var questions = new List<Question>();
+        var returnQuiz = new Quiz("Custom Quiz", new List<Question>());
+        var random = new Random();
 
         foreach (var category in categories)
         {
@@ -67,7 +61,7 @@ public class DataStore
         {
             var randomQuestion = questions[random.Next(questions.Count)];
             questions.Remove(randomQuestion);
-            returnQuiz.AddQuestion(randomQuestion.Statement, randomQuestion.CorrectAnswer, randomQuestion.Category, randomQuestion.ImageFilePath, randomQuestion.Answers);
+            returnQuiz.AddQuestion(randomQuestion.Statement, randomQuestion.CorrectAnswer, randomQuestion.Category, randomQuestion.ImageUrl, randomQuestion.Answers);
         }
 
         return returnQuiz;
@@ -127,8 +121,8 @@ public class DataStore
 
     private void AddQuestionToCategory(Question question)
     {
-        var category = Categories.FirstOrDefault(c => c.Title.Equals(question.Category));
-        var categoryQuestionList = category.Questions.Append(question);
+        var category = Categories.FirstOrDefault(c => c.Title.Equals(question.Category))!;
+        var categoryQuestionList = category.Questions.Append(question)!;
 
         UpdateCategory(new Category(category.Id, categoryQuestionList, category.Title));
     }
@@ -145,26 +139,5 @@ public class DataStore
 
         }
 
-    }
-
-    public void FixIt()
-    {
-        foreach (var quiz in Quizzes)
-        {
-            var newList = new List<Question>();
-
-            foreach (var question in quiz.Questions)
-            {
-                question.Id = ObjectId.GenerateNewId();
-                _questionRepository.Add(question);
-
-
-                var category = Categories.FirstOrDefault(c => c.Title.Equals(question.Category))
-                               ?? new Category() { Id = ObjectId.GenerateNewId(), Title = question.Category };
-
-                category.AddQuestion(question);
-                _categoryRepository.Update(category);
-            }
-        }
     }
 }
