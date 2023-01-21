@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -185,6 +186,12 @@ public Quiz? SelectedQuiz
     }
     public void DeleteQuizCommandExecute()
     {
+
+        var safeDelete = MessageBox.Show($"Är du säker på att du vill ta bort {SelectedQuiz!.Title}?", "Varning",
+            MessageBoxButton.OKCancel);
+
+        if (safeDelete != MessageBoxResult.OK) return;
+
         _dataStore.RemoveQuiz(SelectedQuiz!);
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore);
     }
@@ -201,6 +208,11 @@ public Quiz? SelectedQuiz
     }
     public void DeleteCategoryCommandExecute()
     {
+        var safeDelete = MessageBox.Show($"Är du säker på att du vill ta bort {SelectedCategory!.Title}? Alla frågor som är kopplade till kategorin kommer också att tas bort!", "Varning",
+            MessageBoxButton.OKCancel);
+
+        if (safeDelete != MessageBoxResult.OK) return;
+
         _dataStore.DeleteCategory(SelectedCategory!);
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore, 2);
     }
@@ -223,6 +235,11 @@ public Quiz? SelectedQuiz
 
     public void DeleteQuestionCommandExecute()
     {
+        var safeDelete = MessageBox.Show($"Är du säker på att du vill ta bort {SelectedQuestion!.Statement}?", "Varning",
+            MessageBoxButton.OKCancel);
+
+        if (safeDelete != MessageBoxResult.OK) return;
+
         _dataStore.DeleteQuestion(SelectedQuestion!);
         _navigationStore.CurrentViewModel = new MainMenuViewModel(_dataStore, _navigationStore, 1);
     }

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Labb3_Databaser_NET22.DataModels;
 using Labb3_Databaser_NET22.Stores;
@@ -42,6 +43,12 @@ public class CreateCategoryViewModel : ObservableObject
 
     public void SaveCommandExecute()
     {
+        if (_dataStore.Categories.Any(c => c.Title.Equals(Title) && !c.Id.Equals(_category.Id)))
+        {
+            MessageBox.Show($"En kategori med titeln {Title} finns redan!");
+            return;
+        }
+
         _category.Title = Title;
 
         _dataStore.UpdateCategory(_category);
